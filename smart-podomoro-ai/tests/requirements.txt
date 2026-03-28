@@ -1,0 +1,9 @@
+# Pustaka Utama untuk Kecerdasan Buatan (AI)
+torch
+
+# Pustaka untuk Tampilan (GUI) - Biasanya bawaan Python, 
+# tapi ditulis di sini agar memastikan versi yang kompatibel.
+# tkinter (bawaan, tidak perlu di list di pip, tapi cukup tahu saja)
+
+# Pustaka tambahan jika nanti ingin menambah grafik (Opsional)
+# matplotlib
