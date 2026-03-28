@@ -1,11 +1,11 @@
 import torch
 import torch.nn as nn
 
-# Model Sederhana: Input (Sisa Waktu, Jumlah Stop) -> Output (Tenaga Otak)
-class OtakFokus(nn.Module):
+class AIAgent(nn.Module):
+    """Neural Network untuk memprediksi tingkat fokus pengguna."""
     def __init__(self):
-        super(OtakFokus, self).__init__()
-        self.linear_stack = nn.Sequential(
+        super(AIAgent, self).__init__()
+        self.net = nn.Sequential(
             nn.Linear(2, 8),
             nn.ReLU(),
             nn.Linear(8, 1),
@@ -13,17 +13,20 @@ class OtakFokus(nn.Module):
         )
 
     def forward(self, x):
-        return self.linear_stack(x)
+        return self.net(x)
 
-# Fungsi untuk memberikan saran
-def berikan_saran(waktu_jalan, jumlah_stop):
-    model = OtakFokus() # Dalam versi asli, ini akan me-load file .pth
-    input_data = torch.tensor([[float(waktu_jalan), float(jumlah_stop)]])
+def hitung_saran_ai(model, sisa_detik, jumlah_stop):
+    """Mengambil keputusan berdasarkan data input."""
+    # Menyiapkan data untuk PyTorch
+    input_data = torch.tensor([[float(sisa_detik), float(jumlah_stop)]])
     
     with torch.no_grad():
-        skor_tenaga = model(input_data).item()
+        skor = model(input_data).item()
     
-    if skor_tenaga < 0.3 or jumlah_stop > 4:
-        return "⚠️ AI: Kamu tampak lelah. Coba istirahat 10 menit?", "#e74c3c"
+    # Memberikan umpan balik berdasarkan skor (0.0 - 1.0)
+    if skor < 0.4:
+        return "AI: Kamu terlihat lelah. Istirahat sejenak?", "#e74c3c"
+    elif jumlah_stop > 2:
+        return "AI: Fokusmu terganggu. Coba tarik napas dalam.", "#f1c40f"
     else:
-        return "✅ AI: Fokusmu stabil. Gaspol!", "#2ecc71"
+        return "AI: Kerja bagus! Pertahankan momentum ini.", "#2ecc71"

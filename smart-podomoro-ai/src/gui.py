@@ -1,29 +1,63 @@
-import tkinter as tk
+import customtkinter as ctk
 
-class PomodoroGUI:
-    def __init__(self, root, start_callback, stop_callback, reset_callback):
-        self.root = root
-        self.root.title("Smart Pomodoro AI")
-        self.root.config(padx=50, pady=30, bg="#2c3e50")
+class PomodoroGUI(ctk.CTk):
+    def __init__(self, start_cmd, stop_cmd, reset_cmd):
+        super().__init__()
+
+        self.title("Smart Pomodoro AI - Premium Edition")
+        self.geometry("450x620")
+        self.resizable(False, False)
+
+        # Inisialisasi Callback
+        self.start_cmd = start_cmd
+        self.stop_cmd = stop_cmd
+        self.reset_cmd = reset_cmd
+
+        self.setup_ui()
+
+    def setup_ui(self):
+        # Header / Judul
+        self.label_title = ctk.CTkLabel(self, text="MODE FOKUS", font=("Roboto", 28, "bold"), text_color="#5dade2")
+        self.label_title.pack(pady=(30, 10))
+
+        # Canvas untuk Lingkaran Progress (menggunakan standar tkinter di dalam CTK)
+        self.canvas = ctk.CTkCanvas(self, width=250, height=250, bg="#242424", highlightthickness=0)
+        self.canvas.pack(pady=20)
         
-        # Label Judul
-        self.label_judul = tk.Label(text="SIAP FOKUS?", fg="#ecf0f1", bg="#2c3e50", font=("Courier", 20, "bold"))
-        self.label_judul.pack(pady=10)
+        # Lingkaran Latar Belakang
+        self.circle_bg = self.canvas.create_oval(10, 10, 240, 240, outline="#3b3b3b", width=10)
+        
+        # Busur Progress (Lingkaran yang berkurang)
+        self.progress_arc = self.canvas.create_arc(10, 10, 240, 240, start=90, extent=360, 
+                                                 outline="#5dade2", width=12, style="arc")
+        
+        # Teks Waktu Digital
+        self.time_text = self.canvas.create_text(125, 125, text="25:00", fill="white", font=("Roboto", 45, "bold"))
 
-        # Canvas Lingkaran
-        self.canvas = tk.Canvas(width=220, height=220, bg="#2c3e50", highlightthickness=0)
-        self.canvas.create_oval(10, 10, 210, 210, outline="#34495e", width=5)
-        self.obat_nyamuk = self.canvas.create_arc(10, 10, 210, 210, start=90, extent=360, outline="#2ecc71", width=10, style="arc")
-        self.teks_waktu = self.canvas.create_text(110, 110, text="25:00", fill="white", font=("Courier", 35, "bold"))
-        self.canvas.pack()
+        # Area Umpan Balik AI
+        self.ai_frame = ctk.CTkFrame(self, fg_color="#2b2b2b", corner_radius=12)
+        self.ai_frame.pack(pady=10, padx=40, fill="x")
+        self.label_ai = ctk.CTkLabel(self.ai_frame, text="AI: Siap membantumu fokus hari ini", 
+                                    font=("Arial", 13, "italic"), text_color="#abb2b9")
+        self.label_ai.pack(pady=15)
 
-        # Label Saran AI
-        self.label_saran = tk.Label(text="Tekan MULAI untuk berlatih", fg="#bdc3c7", bg="#2c3e50", font=("Arial", 10, "italic"))
-        self.label_saran.pack(pady=15)
+        # Panel Tombol Kontrol
+        self.btn_frame = ctk.CTkFrame(self, fg_color="transparent")
+        self.btn_frame.pack(pady=25)
 
-        # Tombol-tombol
-        frame_btn = tk.Frame(bg="#2c3e50")
-        frame_btn.pack()
-        tk.Button(frame_btn, text="MULAI", command=start_callback, bg="#27ae60", fg="white", width=8).pack(side="left", padx=5)
-        tk.Button(frame_btn, text="STOP", command=stop_callback, bg="#c0392b", fg="white", width=8).pack(side="left", padx=5)
-        tk.Button(frame_btn, text="RESET", command=reset_callback, width=8).pack(side="left", padx=5)
+        self.start_btn = ctk.CTkButton(self.btn_frame, text="MULAI", command=self.start_cmd, 
+                                      fg_color="#27ae60", hover_color="#219150", width=110, font=("Roboto", 14, "bold"))
+        self.start_btn.pack(side="left", padx=10)
+
+        self.stop_btn = ctk.CTkButton(self.btn_frame, text="STOP", command=self.stop_cmd, 
+                                     fg_color="#c0392b", hover_color="#a93226", width=110, font=("Roboto", 14, "bold"))
+        self.stop_btn.pack(side="left", padx=10)
+
+        self.reset_btn = ctk.CTkButton(self.btn_frame, text="RESET", command=self.reset_cmd, 
+                                      fg_color="#7f8c8d", hover_color="#707b7c", width=110, font=("Roboto", 14, "bold"))
+        self.reset_btn.pack(side="left", padx=10)
+
+    def update_visuals(self, menit, detik, extent):
+        """Memperbarui teks waktu dan lingkaran progress."""
+        self.canvas.itemconfig(self.time_text, text=f"{menit:02d}:{detik:02d}")
+        self.canvas.itemconfig(self.progress_arc, extent=extent)
