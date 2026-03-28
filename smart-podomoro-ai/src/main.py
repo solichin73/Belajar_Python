@@ -55,7 +55,7 @@ class Controller:
             elif jenis == "stop":
                 path_suara = resource_path("assets/stop.mp3")
             elif jenis == "reset":
-                path_suara = resource_path("assets/reset.mp3+ls")
+                path_suara = resource_path("assets/reset.mp3")
             
             if os.path.exists(path_suara):
                 pygame.mixer.music.load(path_suara)
