@@ -56,9 +56,9 @@ class Controller:
         if not pygame.mixer.get_init(): return
         try:
             path_map = {
-                "mulai": "assets/start.wav",
-                "stop": "assets/stop.wav",
-                "reset": "assets/reset.wav",
+                "mulai": "assets/start.mp3",
+                "stop": "assets/stop.mp3",
+                "reset": "assets/reset.mp3",
                 "alarm": "assets/alarm.wav"
             }
             path = resource_path(path_map.get(jenis, ""))
